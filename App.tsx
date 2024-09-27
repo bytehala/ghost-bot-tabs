@@ -1,118 +1,94 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Iconify} from 'react-native-iconify';
+import Page1 from './Page1';
+import Page2 from './Page2';
+import Page3 from './Page3';
+import {Button, Pressable, View} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Tab = createBottomTabNavigator();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+export default function App() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        // must render a page with the tabBar visibile at least once for "ghost button" to appear
+        initialRouteName="3"
+        // it does not matter if header is shown, but i'm hiding it so I can
+        // display the "click here" positions accurately
+        screenOptions={{headerShown: false}}>
+        <Tab.Screen
+          name="1"
+          component={Page1}
+          // tabBarStyle display must be "none" for "ghost button" to appear on this screen
+          options={{tabBarStyle: {display: 'none'}}}
+        />
+        <Tab.Screen
+          name="2"
+          component={Page2}
+          options={{
+            // tabBarStyle display must be "none" for "ghost button" to appear on this screen
+            tabBarStyle: {display: 'none'},
+            tabBarIcon: ({color, size}) => (
+              <Iconify //iconify is necessary for "ghost button" to page 2
+                color={color}
+                // size={size}
+                size={size + 15} //larger size is necessary for "ghost button" to page 2
+                icon="material-symbols:circle-outline"
+              />
+
+              // tried replacing iconofy with these, couldn't reproduce "ghost button"
+              // <View
+              //   style={{
+              //     backgroundColor: "grey",
+              //     width: size + 15,
+              //     height: size + 15,
+              //   }}
+              // />
+              // <Ionicons name="at-circle" size={size +15} color={color}/>
+              // <Pressable
+              //   onPress={() => console.log("Tab 2 pressed")}
+              //   style={{
+              //     backgroundColor: color,
+              //     height: size + 15,
+              //     width: size + 15,
+              //   }}
+              // />
+            ),
+          }}
+        />
+        <Tab.Screen //the ghost button for page 3 only works if it is the last tab
+          name="3"
+          component={Page3}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              //iconify is necessary for "ghost button" to page 3
+              <Iconify
+                // if pointerEvents is set to none, the ghost button will not trigger anything
+                // pointerEvents="none"
+                // if onPress is defined, it will be triggered but not the navigation event
+                // onPress={()=>console.log('Page 3 iconify pressed')}
+                color={color}
+                size={size}
+                icon="gg:profile"
+              />
+
+              // no ghost button with pressable or expo icon
+              // <Ionicons name="person" size={size} color={color}/>
+              // <Pressable
+              //   onPress={() => console.log("Tab 3 pressed")}
+              //   style={{
+              //     backgroundColor: color,
+              //     height: size,
+              //     width: size,
+              //   }}
+              // />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
