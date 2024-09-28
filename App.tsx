@@ -18,7 +18,16 @@ export default function App() {
         initialRouteName="3"
         // it does not matter if header is shown, but i'm hiding it so I can
         // display the "click here" positions accurately
-        screenOptions={{headerShown: false}}>
+        screenOptions={({route: _, navigation}) => {
+          const navIndex = navigation.getState().index;
+          const tabBarButtonOverride =
+            navIndex === 0 || navIndex === 1 ? {tabBarButton: () => null} : {};
+
+          return {
+            headerShown: false,
+            ...tabBarButtonOverride,
+          };
+        }}>
         <Tab.Screen
           name="1"
           component={Page1}
